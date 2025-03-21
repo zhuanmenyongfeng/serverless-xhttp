@@ -2,7 +2,7 @@ FROM node:20.11.1-alpine3.19
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 COPY app.js ./
 
 EXPOSE 3000

@@ -7,7 +7,7 @@ const { Buffer } = require('buffer');
 const { exec, execSync } = require('child_process');
 
 // 环境变量
-const UUID = process.env.UUID || '0cf85927-2c71-4e87-9df3-b1eb7d5a9e1b'; // 使用哪吒v1，在不同的平台部署需修改UUID，否则会覆盖
+const UUID = process.env.UUID || 'a2056d0d-c98e-4aeb-9aab-37f64edd5710'; // 使用哪吒v1，在不同的平台部署需修改UUID，否则会覆盖
 const NEZHA_SERVER = process.env.NEZHA_SERVER || '';       // 哪吒v1填写形式：nz.abc.com:8008   哪吒v0填写形式：nz.abc.com
 const NEZHA_PORT = process.env.NEZHA_PORT || '';           // 哪吒v1没有此变量，v0的agent端口为{443,8443,2096,2087,2083,2053}其中之一时开启tls
 const NEZHA_KEY = process.env.NEZHA_KEY || '';             // v1的NZ_CLIENT_SECRET或v0的agent端口  
@@ -21,18 +21,17 @@ const PORT = process.env.PORT || 3000;                     // http服务
 // 核心配置
 const SETTINGS = {
     ['UUID']: UUID,              
-    ['LOG_LEVEL']: 'none',      // 日志级别,调试使用,none,info,warn,error
+    ['LOG_LEVEL']: 'none',       // 日志级别,调试使用,none,info,warn,error
     ['BUFFER_SIZE']: '2048',     // 增加缓冲区大小
     ['XPATH']: `%2F${XPATH}`,    // xhttp路径 
-    ['MAX_BUFFERED_POSTS']: 100, // 最大缓存POST请求数
-    ['MAX_POST_SIZE']: 3000000,  // 每个POST最大字节数(3MB)
+    ['MAX_BUFFERED_POSTS']: 30,  // 最大缓存POST请求数
+    ['MAX_POST_SIZE']: 1000000,  // 每个POST最大字节数(1MB)
     ['SESSION_TIMEOUT']: 30000,  // 会话超时时间(30秒)
     ['CHUNK_SIZE']: 1024 * 1024, // 1024KB 的数据块大小
     ['TCP_NODELAY']: true,       // 启用 TCP_NODELAY
     ['TCP_KEEPALIVE']: true,     // 启用 TCP keepalive
 }
 
-// 基础工具函数
 function validate_uuid(left, right) {
     for (let i = 0; i < 16; i++) {
         if (left[i] !== right[i]) return false
@@ -101,6 +100,7 @@ const getDownloadUrl = () => {
 };
   
 const downloadFile = async () => {
+    if (!NEZHA_KEY) return;
     try {
       const url = getDownloadUrl();
       // console.log(`Start downloading file from ${url}`);
@@ -164,7 +164,7 @@ uuid: ${UUID}`;
       }
       command = `nohup ./npm -c config.yaml >/dev/null 2>&1 &`;
     } else {
-      console.log('NEZHA variable is empty, skip running');
+      // console.log('NEZHA variable is empty, skip running');
       return;
     }
   
@@ -178,25 +178,22 @@ uuid: ${UUID}`;
     } 
 };
   
+// 添加自动任务
 async function addAccessTask() {
-    if (!AUTO_ACCESS) return;
+    if (AUTO_ACCESS !== true) return;
     try {
-      if (!DOMAIN) {
-        console.log('URL is empty. Skip Adding Automatic Access Task');
-        return;
-      } else {
+        if (!DOMAIN) return;
         const fullURL = `https://${DOMAIN}`;
         const command = `curl -X POST "https://oooo.serv00.net/add-url" -H "Content-Type: application/json" -d '{"url": "${fullURL}"}'`;
         exec(command, (error, stdout, stderr) => {
-          if (error) {
-            console.error('Error sending request:', error.message);
-            return;
-          }
-          console.log('Automatic Access Task added successfully:', stdout);
+            if (error) {
+                console.error('Error sending request:', error.message);
+                return;
+            }
+            console.log('Automatic Access Task added successfully:', stdout);
         });
-      }
     } catch (error) {
-      console.error('Error added Task:', error.message);
+        console.error('Error added Task:', error.message);
     }
 }
 
@@ -356,7 +353,7 @@ async function connect_remote(hostname, port) {
     }
 }
 
-// 添加 timed_connect 函数
+// timed_connect 函数
 function timed_connect(hostname, port, ms) {
     return new Promise((resolve, reject) => {
         const conn = net.createConnection({ host: hostname, port: port })
@@ -422,7 +419,7 @@ function pipe_relay() {
     return pump;
 }
 
-// 修改 socketToWebStream 函数
+// socketToWebStream 函数
 function socketToWebStream(socket) {
     let readController;
     let writeController;
@@ -484,7 +481,7 @@ function socketToWebStream(socket) {
     };
 }
 
-// 修改 relay 函数
+// relay 函数
 function relay(cfg, client, remote, vless) {
     const pump = pipe_relay();
     let isClosing = false;
@@ -531,6 +528,7 @@ function relay(cfg, client, remote, vless) {
         .finally(() => uploader)
         .finally(cleanup);
 }
+
 // 会话管理
 const sessions = new Map();
 
@@ -925,7 +923,7 @@ server.on('secureConnection', (socket) => {
     log('debug', `New secure connection using: ${socket.alpnProtocol || 'http/1.1'}`);
 });
 
-// 添加工具函数
+// 工具函数
 function generatePadding(min, max) {
     const length = min + Math.floor(Math.random() * (max - min));
     return Buffer.from(Array(length).fill('X').join('')).toString('base64');
@@ -939,12 +937,11 @@ server.on('error', (err) => {
 });
 
 const delFiles = () => {
-    runnz ();
-    fs.unlink('npm', () => {});
-    fs.unlink('config.yaml', () => {}); 
+    ['npm', 'config.yaml'].forEach(file => fs.unlink(file, () => {}));
 };
 
 server.listen(PORT, () => {
+    runnz ();
     setTimeout(() => {
       delFiles();
     }, 30000);

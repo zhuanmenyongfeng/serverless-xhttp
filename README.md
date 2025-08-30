@@ -1,6 +1,4 @@
-# VLESS-XHTTP golang 版
-
-高性能xhttp协议实现
+# VLESS-XHTTP 版
 
 ## 环境变量配置
 

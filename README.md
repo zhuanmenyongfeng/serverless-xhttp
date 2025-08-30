@@ -11,7 +11,7 @@
 | `AUTO_ACCESS` | `false` | 自动保活开关 |
 | `XPATH` | UUID前8位 | XHTTP路径 |
 | `SUB_PATH` | `sub` | 订阅路径 |
-| `DOMAIN` | 自动获取 | 服务器域名或IP |
+| `DOMAIN` |   | 服务器域名或IP |
 | `NAME` | `Xhttp` | 节点名称 |
 | `PORT` | `3000` | HTTP服务端口 |
 | `LOG_LEVEL` | `none` | 日志级别 (none/debug/info/warn/error) |

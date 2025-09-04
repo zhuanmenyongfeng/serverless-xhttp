@@ -30,9 +30,9 @@
 | 变量名 | 默认值 | 说明 |
 |--------|--------|------|
 | `UUID` | `a2056d0d-c98e-4aeb-9aab-37f64edd5710` | UUID |
-| `NEZHA_SERVER` | `` | 哪吒服务器地址 |
-| `NEZHA_PORT` | `` | 哪吒端口 (v0版本使用) |
-| `NEZHA_KEY` | `` | 哪吒密钥 |
+| `NEZHA_SERVER` |  | 哪吒面板地址 v0: 域名 v1: 域名:端口|
+| `NEZHA_PORT` |    | 哪吒端口 (v0版本使用) |
+| `NEZHA_KEY` |     | 哪吒密钥 |
 | `AUTO_ACCESS` | `false` | 自动保活开关 |
 | `XPATH` | UUID前8位 | XHTTP路径 |
 | `SUB_PATH` | `sub` | 订阅路径 |

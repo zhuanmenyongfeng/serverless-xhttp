@@ -42,8 +42,8 @@
 | `LOG_LEVEL` | `none` | 日志级别 (none/debug/info/warn/error) |
 
 ### 订阅链接
-HTTP: `http://your-domain.com:${PORT}/${SUB_PATH}`
-HTTPS: `https://your-domain.com/${SUB_PATH}`
+* HTTP: `http://your-domain.com:${PORT}/${SUB_PATH}`
+* HTTPS: `https://your-domain.com/${SUB_PATH}`
 
 ## 快速部署 
 

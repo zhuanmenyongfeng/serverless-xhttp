@@ -1,6 +1,6 @@
 <div align="center">
 
-# VLESS-XHTTP Proxy Server (Node.js)
+# VLESS-XHTTP Proxy Server
 
 [![npm version](https://img.shields.io/npm/v/@eooce/xhttp?style=flat-square)](https://www.npmjs.com/package/@eooce/xhttp)
 [![npm downloads](https://img.shields.io/npm/dm/@eooce/xhttp?style=flat-square)](https://www.npmjs.com/package/@eooce/xhttp)
